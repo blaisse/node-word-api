@@ -46,3 +46,5 @@ app.get("/word", (req, res) => {
 app.listen(port, () => {
     console.log('server started');
 });
+
+module.exports = {app};
