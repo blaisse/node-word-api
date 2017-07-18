@@ -12,6 +12,12 @@ const app = express();
 const port = process.env.PORT;
 
 app.use(bodyParser.json());
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
+});
+
 
 app.post("/words", (req, res) => {
     let word = new Word({
@@ -51,6 +57,11 @@ app.get("/word/:name", (req, res) => {
             res.send(null);
         }
     });
+});
+app.patch('/word/:name', (req, res) => {
+    var name = req.params.name;
+    console.log(req.body);
+    // Word.findOneAndUpdate({ word: name }, ).then();
 });
 
 app.listen(port, () => {
