@@ -42,6 +42,16 @@ app.get("/word", (req, res) => {
         res.status(400).send(e);
     });
 });
+app.get("/word/:name", (req, res) => {
+    var name = req.params.name;
+    Word.findOne({word: name}).then((w) => {
+        if(w){
+            res.send(w);
+        } else {
+            res.send(null);
+        }
+    });
+});
 
 app.listen(port, () => {
     console.log('server started');
