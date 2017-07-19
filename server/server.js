@@ -60,8 +60,15 @@ app.get("/word/:name", (req, res) => {
 });
 app.patch('/word/:name', (req, res) => {
     var name = req.params.name;
-    console.log(req.body);
-    // Word.findOneAndUpdate({ word: name }, ).then();
+    var body = req.body;
+    Word.findOneAndUpdate({ _id: body._id, word: name },{$set: body},{new: true}).then((w) => {
+        if(!w) {
+            return res.status(404).send({ omg: "omg" });
+        }
+        res.send({ w });
+    }).catch((e) => {
+        res.status(404).send({ error: "ERROR"});
+    });
 });
 
 app.listen(port, () => {
