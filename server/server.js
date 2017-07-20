@@ -51,11 +51,22 @@ app.get("/words", (req, res) => {
 });
 app.get("/word", (req, res) => {
     //possible use React state to reject repeated word
-    Word.aggregate([{$sample: {size:1}}]).then((word) => {
-        res.send(word[0]);
+    Word.aggregate([
+        { $match: { conj: { $elemMatch: { time: "simple" } } } },
+        { $match: { conj: { $elemMatch: { time: "past_simple" } } } },
+        { $sample: { size: 1 } }
+    ]).then((verb) => {
+        if(verb) res.send(verb);
     }, (e) => {
-        res.status(400).send(e);
+        res.status(404).send(e);
     });
+    // Word.aggregate([
+    //     {$sample: {size:1}}
+    // ]).then((word) => {
+    //     res.send(word[0]);
+    // }, (e) => {
+    //     res.status(400).send(e);
+    // });
 });
 app.get("/word/:name", (req, res) => {
     var name = req.params.name;
