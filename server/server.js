@@ -49,21 +49,48 @@ app.get("/words", (req, res) => {
         res.status(400).send(e);
     });
 });
-app.get("/word", (req, res) => {
+app.post("/word", (req, res) => {
     //possible use React state to reject repeated word
     const times = req.body.time; //array of strings
     const present_simple = 'simple';
     const past_simple = 'past_simple';
+    var rDocs = [];
+    var arr= [];
 
-    Word.aggregate([
-        { $match: { conj: { $elemMatch: { time: "simple" } } } },
-        { $match: { conj: { $elemMatch: { time: "past_simple" } } } },
-        { $sample: { size: 1 } }
-    ]).then((verb) => {
-        if(verb) res.send(verb[0]);
-    }, (e) => {
-        res.status(404).send(e);
+    Word.find().then((docs) => {
+        // console.log("DOCS", docs);
+        docs.forEach(function(item){
+            var x = req.body.time;
+            // console.log(req.body.time);
+            //  var x = ['futur', 'simple', 'past_simple'];
+            // var x = ['futur'];
+            // console.log(present_simple);
+            var y = [];
+            item.conj.forEach(function(obj) {
+                x.forEach(function(tense){
+                  if(obj.time === tense) y.push(tense);
+                });
+            });
+            // console.log('???', rDocs);
+            if(y.length === x.length){
+                rDocs.push(item);
+            }
+        });
+        // console.log('rDocs', rDocs);
+        const random = Math.floor(Math.random() * rDocs.length);
+        // console.log(random);
+        res.send(rDocs[random]);
     });
+    
+    // Word.aggregate([
+    //     { $match: { conj: { $elemMatch: { time: "simple" } } } },
+    //     { $match: { conj: { $elemMatch: { time: "past_simple" } } } },
+    //     { $sample: { size: 1 } }
+    // ]).then((verb) => {
+    //     if(verb) res.send(verb[0]);
+    // }, (e) => {
+    //     res.status(404).send(e);
+    // });
     // Word.aggregate([
     //     {$sample: {size:1}}
     // ]).then((word) => {
