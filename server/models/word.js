@@ -8,6 +8,7 @@ const Word = mongoose.model('Word', {
         trim: true
     },
     meaning: String,
+    lang: String,
     conj: [
         {
             "time": String,
