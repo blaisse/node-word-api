@@ -32,6 +32,7 @@ app.post("/words", (req, res) => {
     let word = new Word({
         word: req.body.word,
         meaning: req.body.meaning,
+        lang: req.body.lang,
         conj: req.body.conj
         
     });
