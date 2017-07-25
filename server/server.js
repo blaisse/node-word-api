@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 
 const { mongoose } = require('./db/mongoose');
 const { Word } = require('./models/word');
+const { Noun } = require('./models/noun');
 
 const { ObjectID } = require('mongodb');
 
@@ -120,6 +121,30 @@ app.patch('/word/:name', (req, res) => {
         res.send({ w });
     }).catch((e) => {
         res.status(404).send({ error: "ERROR"});
+    });
+});
+
+//NOUN -----------------------
+app.post('/noun', (req, res) => {
+    let noun = new Noun({
+        word: req.body.word,
+        article: req.body.article,
+        lang: req.body.lang,
+        meaning: req.body.meaning
+    });
+    noun.save().then((n) => {
+        res.send(n);
+    }, (e) => {
+        res.status(404).send(e);
+    });
+});
+app.post('/fetch', (req, res) => {
+    Noun.find({lang: req.body.lang}).then((nouns) => {
+        const rand = Math.floor(Math.random() * nouns.length);
+        res.send(nouns[rand]);
+    
+    }).catch((e) => {
+        res.status(404).send(e);
     });
 });
 
