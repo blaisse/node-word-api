@@ -138,6 +138,16 @@ app.post('/noun', (req, res) => {
         res.status(404).send(e);
     });
 });
+app.get('/noun/:name', (req, res) => {
+    let name = req.parms.name;
+    Noun.findOne({ word: name }).then((word) => {
+        if(word){
+            res.send(word);
+        } else {
+            res.send(null);
+        }
+    });
+});
 app.post('/fetch', (req, res) => {
     Noun.find({lang: req.body.lang}).then((nouns) => {
         const rand = Math.floor(Math.random() * nouns.length);
