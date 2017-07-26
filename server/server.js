@@ -139,7 +139,7 @@ app.post('/noun', (req, res) => {
     });
 });
 app.get('/noun/:name', (req, res) => {
-    let name = req.parms.name;
+    let name = req.params.name;
     Noun.findOne({ word: name }).then((word) => {
         if(word){
             res.send(word);
