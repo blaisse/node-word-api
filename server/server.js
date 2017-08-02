@@ -157,6 +157,13 @@ app.post('/fetch', (req, res) => {
         res.status(404).send(e);
     });
 });
+app.post('/fetchflashcard', (req, res) => {
+    Noun.find({ lang: req.body.lang, img: { $exists: true } }).then((flashcards) => {
+        res.send(flashcards);
+    }).catch((e) => {
+        res.status(404).send(e);
+    });
+});
 
 app.listen(port, () => {
     console.log('server started');
