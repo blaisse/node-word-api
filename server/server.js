@@ -158,6 +158,18 @@ app.post('/fetch', (req, res) => {
     });
 });
 app.post('/fetchflashcard', (req, res) => {
+
+    Noun.aggregate([
+        { $match: { lang: req.body.lang } },
+        { $sample: { size:3 } }
+    ]).then((flashcards) => {
+        
+        const x = flashcards.filter((item) => {
+            return item.img;
+        });
+        
+        res.send(x);
+    });
     // Word.aggregate([
     //     {$sample: {size:1}}
     // ])
@@ -167,23 +179,26 @@ app.post('/fetchflashcard', (req, res) => {
     //     res.status(404).send(e);
     // });
 
-    Noun.find({ lang: req.body.lang, img: { $exists: true } }).then((flashcards) => {
-        let num = 3;
-        if(flashcards.length < num) num=flashcards.length;//flashcards.length
-        let ar = [];
-        for(let i=0;i<num;i++){
-            let ran = Math.floor(Math.random() * num);
-            ar.push(ran);
-        }
-        const r = [];
-       ar.forEach((item) => {
-         r.push(flashcards[item]);
-       });
-        console.log(r);
-        res.send(r);
-    }).catch((e) => {
-        res.status(404).send(e);
-    });
+    // Noun.find({ lang: req.body.lang, img: { $exists: true } }).then((flashcards) => {
+    //     let num = 3;
+    //     if(flashcards.length < num) num=flashcards.length;//flashcards.length
+    //     let ar = [];
+    //     for(let i=0;i<num;i++){
+    //         let ran = Math.floor(Math.random() * num);
+    //         ar.push(ran);
+    //     }
+    //     ar.forEach((item) => {
+
+    //     });
+    //    const r = [];
+    //    ar.forEach((item) => {
+    //      r.push(flashcards[item]);
+    //    });
+    //     console.log(r);
+    //     res.send(r);
+    // }).catch((e) => {
+    //     res.status(404).send(e);
+    // });
 });
 
 app.listen(port, () => {
