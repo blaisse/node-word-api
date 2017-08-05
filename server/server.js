@@ -158,8 +158,29 @@ app.post('/fetch', (req, res) => {
     });
 });
 app.post('/fetchflashcard', (req, res) => {
+    // Word.aggregate([
+    //     {$sample: {size:1}}
+    // ])
+    // Noun.find({ lang: req.body.lang, img: { $exists: true } }).then((flashcards) => {
+    //     res.send(flashcards);
+    // }).catch((e) => {
+    //     res.status(404).send(e);
+    // });
+
     Noun.find({ lang: req.body.lang, img: { $exists: true } }).then((flashcards) => {
-        res.send(flashcards);
+        let num = 3;
+        if(flashcards.length < num) num=flashcards.length;//flashcards.length
+        let ar = [];
+        for(let i=0;i<num;i++){
+            let ran = Math.floor(Math.random() * num);
+            ar.push(ran);
+        }
+        const r = [];
+       ar.forEach((item) => {
+         r.push(flashcards[item]);
+       });
+        console.log(r);
+        res.send(r);
     }).catch((e) => {
         res.status(404).send(e);
     });
