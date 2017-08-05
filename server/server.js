@@ -161,7 +161,7 @@ app.post('/fetchflashcard', (req, res) => {
 
     Noun.aggregate([
         { $match: { lang: req.body.lang } },
-        { $sample: { size:3 } }
+        { $sample: { size:6 } }
     ]).then((flashcards) => {
         
         const x = flashcards.filter((item) => {
