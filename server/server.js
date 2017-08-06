@@ -130,7 +130,8 @@ app.post('/noun', (req, res) => {
         word: req.body.word,
         article: req.body.article,
         lang: req.body.lang,
-        meaning: req.body.meaning
+        meaning: req.body.meaning,
+        img: req.body.img
     });
     noun.save().then((n) => {
         res.send(n);
