@@ -4,7 +4,8 @@ const Noun = mongoose.model('Noun', {
     word: String,
     article: String,
     lang: String,
-    meaning: String
+    meaning: String,
+    img: String
 });
 
 module.exports = { Noun };
