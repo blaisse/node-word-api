@@ -1,0 +1,7 @@
+{
+    "development": {
+        "PORT": 3007,
+        "MONGODB_URL": "mongodb://localhost:27017/language",
+        "SECRET": "hfhf0fiwjf02j0r92sjfjf209fj290fjsjfwfj092jf92f90sfsdfsfjks"
+    }
+}
