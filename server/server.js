@@ -34,6 +34,7 @@ const requireSignin = passport.authenticate('local', { session: false });
 const requireAuth = passport.authenticate('jwt', { session: false });
 
 app.get('/', requireAuth, (req, res) => {
+    // console.log(process.env.SECRET);
     res.send({ message: "Secret page!" });
 });
 app.post('/signin', requireSignin, Authentication.signin);
