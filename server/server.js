@@ -1,7 +1,13 @@
 require('./config/config');
 
+const Authentication = require('./controllers/authentication');
+const passport = require('passport');
+const passportService = require('./services/passport');
+
 const express = require('express');
 const bodyParser = require('body-parser');
+const cheerio = require('cheerio');
+const axios = require('axios');
 
 const { mongoose } = require('./db/mongoose');
 const { Word } = require('./models/word');
@@ -22,12 +28,17 @@ app.use(function(req, res, next) {
 //   res.header('Access-Control-Allow-Methods', 'GET, PUT, POST, DELETE, OPTIONS');
   next();
 });
-// app.options("/*", function(req, res, next){
-//   res.header('Access-Control-Allow-Origin', '*');
-//   res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
-//   res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With');
-// });
 
+//AUTH
+const requireSignin = passport.authenticate('local', { session: false });
+const requireAuth = passport.authenticate('jwt', { session: false });
+
+app.get('/', requireAuth, (req, res) => {
+    res.send({ message: "Secret page!" });
+});
+app.post('/signin', requireSignin, Authentication.signin);
+app.post('/signup', Authentication.signup);
+//END OF AUTH
 
 app.post("/words", (req, res) => {
     let word = new Word({
