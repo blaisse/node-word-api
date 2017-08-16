@@ -6,6 +6,10 @@ function encodeToken(user){
     return jwt.encode({ sub: user.id, iat: timestamp }, process.env.SECRET);
 }
 
+function decodeToken(token){
+
+}
+
 exports.signup = function(req, res, next){
     const email = req.body.email;
     const password = req.body.password;
@@ -28,5 +32,6 @@ exports.signup = function(req, res, next){
 }
 
 exports.signin = function(req, res, next){
-    res.send({ token: encodeToken(req.user) });
+    // console.log(req.user.email);
+    res.send({ token: encodeToken(req.user), username: req.user.email });
 }
