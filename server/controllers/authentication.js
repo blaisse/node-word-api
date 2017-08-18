@@ -22,7 +22,7 @@ exports.signup = function(req, res, next){
         }
         const u = new User({ email, password });
         u.save().then(() => {
-            res.json({ token: encodeToken(u) });
+            res.json({ token: encodeToken(u), username: email });
         }).catch((e) => {
             res.status(422).send(e);
         });
