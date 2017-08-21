@@ -5,7 +5,8 @@ const Noun = mongoose.model('Noun', {
     article: String,
     lang: String,
     meaning: String,
-    img: String
+    img: String,
+    plural: String
 });
 
 module.exports = { Noun };
