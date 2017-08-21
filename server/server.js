@@ -242,6 +242,16 @@ app.post('/fetch', (req, res) => {
         res.status(404).send(e);
     });
 });
+
+app.get('/plural/:lang', (req, res) => {
+  Noun.aggregate([
+      { $match: { lang: req.params.lang } },
+      { $sample: { size: 1 } }
+  ]).then((nouns) => {
+    res.send(nouns[0]);
+  });
+});
+
 app.post('/fetchflashcard', (req, res) => {
 
     Noun.aggregate([
