@@ -214,7 +214,8 @@ app.post('/noun', (req, res) => {
         article: req.body.article,
         lang: req.body.lang,
         meaning: req.body.meaning,
-        img: req.body.img
+        img: req.body.img,
+        plural: req.body.plural
     });
     noun.save().then((n) => {
         res.send(n);
