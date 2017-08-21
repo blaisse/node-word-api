@@ -245,7 +245,7 @@ app.post('/fetch', (req, res) => {
 
 app.get('/plural/:lang', (req, res) => {
   Noun.aggregate([
-      { $match: { lang: req.params.lang } },
+      { $match: { lang: req.params.lang, plural: { "$exists": true } } },
       { $sample: { size: 1 } }
   ]).then((nouns) => {
     res.send(nouns[0]);
