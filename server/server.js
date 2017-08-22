@@ -252,18 +252,23 @@ app.get('/plural/:lang', (req, res) => {
   });
 });
 
+app.get('/flashcardnoimg/:size', (req, res) => {
+    const size = req.params.size;
+
+});
+
 app.post('/fetchflashcard', (req, res) => {
 
     Noun.aggregate([
-        { $match: { lang: req.body.lang } },
+        { $match: { lang: req.body.lang, img: { "$exists": true } } },
         { $sample: { size: 10 } }
     ]).then((flashcards) => {
         
-        const x = flashcards.filter((item) => {
-            return item.img;
-        });
+        // const x = flashcards.filter((item) => {
+        //     return item.img;
+        // });
         
-        res.send(x);
+        res.send(flashcards);
     });
     // Word.aggregate([
     //     {$sample: {size:1}}
