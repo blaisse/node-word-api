@@ -261,7 +261,7 @@ app.post('/fetchflashcard', (req, res) => {
 
     Noun.aggregate([
         { $match: { lang: req.body.lang, img: { "$exists": true } } },
-        { $sample: { size: 1 } }
+        { $sample: { size: 4 } }
     ]).then((flashcards) => {
         
         // const x = flashcards.filter((item) => {
