@@ -22,7 +22,7 @@ exports.signup = function(req, res, next){
         }
         const u = new User({ email, password });
         u.save().then(() => {
-            res.json({ token: encodeToken(u), username: email });
+            res.json({ token: encodeToken(u), username: email, lang: u.lang});
         }).catch((e) => {
             res.status(422).send(e);
         });
@@ -32,6 +32,7 @@ exports.signup = function(req, res, next){
 }
 
 exports.signin = function(req, res, next){
+    console.log('?????');
     // console.log(req.user.email);
-    res.send({ token: encodeToken(req.user), username: req.user.email });
+    res.send({ token: encodeToken(req.user), username: req.user.email, lang: req.user.lang });
 }

@@ -13,8 +13,14 @@ const localLogin = new LocalStrategy(localOptions, function(email, password, don
         }
         //compare password
         user.comparePasswords(password, function(err, isMatch){
-            if(err) return done(err);
-            if(!isMatch) return done(null, false);//not matching
+            if(err){
+                console.log('ERRR0r');
+                return done(err);
+            }
+            if(!isMatch){
+                // console.log('????');
+                return done(null, false)
+            }//not matching
             return done(null, user);//matching
             //return the user to Authentication.signin
         });
