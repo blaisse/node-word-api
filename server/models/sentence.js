@@ -3,8 +3,9 @@ const Schema = mongoose.Schema;
 
 const SentenceSchema = new Schema({
     level: String,
-    sentence: String,
-    lang: String
+    sentence: {type: String, unique: true},
+    lang: String,
+    translation: String
 });
 
 const Sentence = mongoose.model('sentence', SentenceSchema);

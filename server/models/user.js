@@ -10,7 +10,8 @@ const userSchema = new Schema({
     },
     password: String,
     lang: { type: String, default: 'french' },
-    flashcards: [{ type: Schema.Types.ObjectId, ref: 'flashcard' }]    
+    flashcards: [{ type: Schema.Types.ObjectId, ref: 'flashcard' }],
+    lastCorrect: { type: Schema.Types.Mixed, default: { noun: "zz", verb: "zz" } }    
 });
 
 userSchema.pre('save', function(next){

@@ -10,9 +10,18 @@ class Users {
     getUser(id){
         return this.users.filter(user => user.id === id)[0];
     }
-    getUsersList(room){
+    getUserByName(name){
+        return this.users.filter(user => user.name === name)[0];
+    }
+    addMessage(user){
+        // return
+    }
+    getUsersList(room, username){
+        // console.log('u', username, this.users);
         let users = this.users.filter(user => user.room === room);
+        // let users2 = users.filter(user => user.name !== username);
         let names = users.map(user => user.name);
+        // console.log('names', username, names);
         return names;
     }
     removeUserByName(name){

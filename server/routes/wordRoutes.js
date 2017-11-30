@@ -1,4 +1,5 @@
 const { Word } = require('./../models/word');
+const User = require('./../models/user');
 
 
 module.exports = (app) => {
@@ -31,31 +32,48 @@ module.exports = (app) => {
         const past_simple = 'past_simple';
         var rDocs = [];
         var arr= [];
-    
-        Word.find({lang: req.body.lang}).then((docs) => {
-            // console.log("DOCS", docs);
-            docs.forEach(function(item){
-                var x = req.body.time;
-                // console.log(req.body.time);
-                //  var x = ['futur', 'simple', 'past_simple'];
-                // var x = ['futur'];
-                // console.log(present_simple);
-                var y = [];
-                item.conj.forEach(function(obj) {
-                    x.forEach(function(tense){
-                      if(obj.time === tense) y.push(tense);
+        const user = req.body.user;
+        // console.log('user', user);
+        if(user){
+            User.findOne({ email: user }).then((u) => {
+                // console.log('hilfe', u);
+                Word.find({lang: req.body.lang, word: { $ne: u.lastCorrect['verb'] }}).then((docs) => {
+                    docs.forEach(function(item){
+                        var x = req.body.time;
+                        var y = [];
+                        item.conj.forEach(function(obj) {
+                            x.forEach(function(tense){
+                              if(obj.time === tense) y.push(tense);
+                            });
+                        });
+                        if(y.length === x.length){
+                            rDocs.push(item);
+                        }
                     });
+                    // console.log('rDocs', rDocs);
+                    const random = Math.floor(Math.random() * rDocs.length);
+                    res.send(rDocs[random]);
                 });
-                // console.log('???', rDocs);
-                if(y.length === x.length){
-                    rDocs.push(item);
-                }
             });
-            // console.log('rDocs', rDocs);
-            const random = Math.floor(Math.random() * rDocs.length);
-            // console.log(random);
-            res.send(rDocs[random]);
-        });
+        } else {
+            Word.find({lang: req.body.lang}).then((docs) => {
+                docs.forEach(function(item){
+                    var x = req.body.time;
+                    var y = [];
+                    item.conj.forEach(function(obj) {
+                        x.forEach(function(tense){
+                          if(obj.time === tense) y.push(tense);
+                        });
+                    });
+                    if(y.length === x.length){
+                        rDocs.push(item);
+                    }
+                });
+                // console.log('rDocs', rDocs);
+                const random = Math.floor(Math.random() * rDocs.length);
+                res.send(rDocs[random]);
+            });
+        }
         
         // Word.aggregate([
         //     { $match: { conj: { $elemMatch: { time: "simple" } } } },

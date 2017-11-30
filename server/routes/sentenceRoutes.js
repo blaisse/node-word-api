@@ -1,4 +1,5 @@
 const Sentence = require('./../models/sentence');
+const User = require('./../models/user');
 
 function checkRand(ar, randomNumber){
     //Cannot break forEach...
@@ -32,16 +33,41 @@ function mixArray(sentence){
         let slicedFully = [];
         sliced.forEach((item) => {
             // slicedFully.push(item.split(/(?=')/g));
+            let pushed = false;
             if(item.indexOf("'") !== -1){
+                pushed = true;
                 // console.log(item.split("'"));
                 // console.log(item.split("'")[0]+"'");
                 const s = item.split("'");
                 //push both j' and habite
                 slicedFully.push(s[0]+"'");
                 slicedFully.push(s[1]);
-            } else {
+            }
+            if(item.indexOf("-") !== -1){
+                pushed = true;
+                const a = item.split("-");
+                slicedFully.push(a[0]);
+                slicedFully.push("-");
+                slicedFully.push(a[1]);
+            }
+            if(item.indexOf(".") !== -1){
+                pushed = true;
+                const a = item.split(".");
+                slicedFully.push(a[0]);
+                slicedFully.push(".");
+            }
+            //it slices es-tu? -- work on it
+            // if(item.indexOf("?") !== -1){
+            //     pushed = true;
+            //     const a = item.split("?");
+            //     console.log('a', a);
+            //     slicedFully.push(a[0]);
+            //     slicedFully.push("?");
+            // }
+            if(!pushed){
                 slicedFully.push(item);
             }
+            
         });
         // console.log('sliced', slicedFully);
         //mix the words up
@@ -71,36 +97,71 @@ function mixArray(sentence){
 module.exports = (app) => {
 
     app.post('/savesentence', (req, res) => {
-        res.send(req.body);
+        // console.log(req.body);
         let obj = new Sentence({
-            level: req.body.level,
-            sentence: req.body.sentence,
-            lang: req.body.lang
+            level: req.body.values.level,
+            sentence: req.body.values.sentence,
+            lang: req.body.values.lang,
+            translation: req.body.values.translation
         });
         obj.save().then(() => {
-            console.log('saved');
+            // console.log('saved');
+            res.send(obj);
+        }).catch((e) => {
+            res.send(e);
         });
     });
 
-    app.get('/fetchsentence/:lang/:level', (req, res) => {
+    app.get('/fetchsentence/:lang/:level/:user', (req, res) => {
+        // console.log(req.params.user);
         // console.log(typeof req.params.level);
-        //fetch it and slice up
-        Sentence.aggregate([
-            { $match: { lang: req.params.lang } },
-            { $match: { level: req.params.level } },
-            { $sample: { size: 1 } }
-        ]).then((sentence) => {
-            let mix = mixArray(sentence);
-            let r = compareArrays(mix.slicedFully, mix.mixedFully);
-            //make sure both arrays are not the same so the question wont be 
-            //provided with an answer right away
-            while(r){
-                // console.log('pls work');
-                mix = mixArray(sentence);
-                r = compareArrays(mix.slicedFully, mix.mixedFully);
-                // console.log('working', r, mix);
-            }
-            res.send(mix);
-        });
+        const loggedUser = req.params.user;
+        
+            User.findOne({ email: req.params.user }).then((u) => {
+                if(u){
+                    Sentence.aggregate([
+                        { $match: { lang: req.params.lang } },
+                        { $match: { level: req.params.level } },
+                        { $match: { translation: { $ne: u.lastCorrect['sentence'] } } },
+                        { $sample: { size: 1 } }
+                    ]).then((sentence) => {
+                        // console.log('s', sentence);
+                        let mix = mixArray(sentence);
+                        let r = compareArrays(mix.slicedFully, mix.mixedFully);
+                        //make sure both arrays are not the same so the question wont be 
+                        //provided with an answer right away
+                        while(r){
+                            // console.log('pls work');
+                            mix = mixArray(sentence);
+                            r = compareArrays(mix.slicedFully, mix.mixedFully);
+                        }
+                        mix.translation = sentence[0].translation;
+                        res.send(mix);
+                    });
+                } else {
+                    Sentence.aggregate([
+                        { $match: { lang: req.params.lang } },
+                        { $match: { level: req.params.level } },
+                        { $sample: { size: 1 } }
+                    ]).then((sentence) => {
+                        // console.log('s', sentence);
+                        let mix = mixArray(sentence);
+                        let r = compareArrays(mix.slicedFully, mix.mixedFully);
+                        //make sure both arrays are not the same so the question wont be 
+                        //provided with an answer right away
+                        while(r){
+                            // console.log('pls work');
+                            mix = mixArray(sentence);
+                            r = compareArrays(mix.slicedFully, mix.mixedFully);
+                        }
+                        mix.translation = sentence[0].translation;
+                        res.send(mix);
+                    });  
+                }
+              
+            });
+        
+            //fetch it and slice up
+           
     });
 };

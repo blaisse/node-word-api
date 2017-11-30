@@ -1,5 +1,15 @@
 const { Noun } = require('./../models/noun');
 
+const User = require('./../models/user');
+
+const Authentication = require('./../controllers/authentication');
+const passport = require('passport');
+const passportService = require('./../services/passport');
+
+const requireSignin = passport.authenticate('local', { session: false });
+const requireAuth = passport.authenticate('jwt', { session: false });
+
+
 module.exports = (app) => {
 
     app.post('/noun', (req, res) => {
@@ -25,6 +35,24 @@ module.exports = (app) => {
             } else {
                 res.send(null);
             }
+        });
+    });
+    app.get('/userfetchnoun/:lang/:user', (req, res) => {
+        User.findOne({ email: req.params.user }).then((user) => {
+            if(user){
+                // console.log('?', user.lastCorrect['noun']);
+          
+                //fetch a noun that is not the one in lastCorrect.noun
+                Noun.aggregate([
+                    { $match: { lang: req.params.lang } },
+                    { $match: { word: {$ne: user.lastCorrect['noun'] } } },
+                    { $sample: { size: 1 }  } 
+                ]).then((n) => {
+                    res.send(n[0])
+                });
+            }
+        }).catch((e) => {
+            res.send(e);
         });
     });
     app.post('/fetch', (req, res) => {
