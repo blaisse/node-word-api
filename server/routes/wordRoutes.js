@@ -33,13 +33,15 @@ module.exports = (app) => {
         var rDocs = [];
         var arr= [];
         const user = req.body.user;
-        // console.log('user', user);
+        console.log('user', user);
         if(user){
             User.findOne({ email: user }).then((u) => {
                 // console.log('hilfe', u);
                 Word.find({lang: req.body.lang, word: { $ne: u.lastCorrect['verb'] }}).then((docs) => {
+                    console.log('www', docs);
                     docs.forEach(function(item){
                         var x = req.body.time;
+                        // console.log(x);
                         var y = [];
                         item.conj.forEach(function(obj) {
                             x.forEach(function(tense){
@@ -50,7 +52,7 @@ module.exports = (app) => {
                             rDocs.push(item);
                         }
                     });
-                    // console.log('rDocs', rDocs);
+                    console.log('rDocs', rDocs);
                     const random = Math.floor(Math.random() * rDocs.length);
                     res.send(rDocs[random]);
                 });

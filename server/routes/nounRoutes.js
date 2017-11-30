@@ -65,13 +65,30 @@ module.exports = (app) => {
         });
     });
     
-    app.get('/plural/:lang', (req, res) => {
-      Noun.aggregate([
-          { $match: { lang: req.params.lang, plural: { "$exists": true } } },
-          { $sample: { size: 1 } }
-      ]).then((nouns) => {
-        res.send(nouns[0]);
-      });
+    app.get('/plural/:lang/:user', (req, res) => {
+        User.findOne({ email: req.params.user }).then((u) => {
+            if(u){
+                // console.log('help?');
+                Noun.aggregate([
+                    { $match: { lang: req.params.lang, plural: { "$exists": true } } },
+                    { $match: { plural: { $ne: u.lastCorrect['plural'] } } },
+                    { $sample: { size: 1 } }
+                ]).then((nouns) => {
+                    console.log(u.lastCorrect['plural'], nouns[0]);                    
+                  res.send(nouns[0]);
+                });
+            } else {
+                // console.log('here');
+                Noun.aggregate([
+                    { $match: { lang: req.params.lang, plural: { "$exists": true } } },
+                    { $sample: { size: 1 } }
+                ]).then((nouns) => {
+                    console.log(nouns[0]);
+                  res.send(nouns[0]);
+                });
+            }
+        });
+    
     });
 
 };
