@@ -110,7 +110,9 @@ require('./routes/userRoutes')(app);
 require('./routes/chatRoutes')(app, io);
 
 
-
+app.get("/", (req, res) => {
+  res.send("HERLLO PLS WORK");
+});
 
 server.listen(port, () => {
     console.log('server started');
