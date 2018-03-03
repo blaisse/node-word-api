@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node server/server.js",
+    "start": "node server/server.js --scripts-prepend-node-path",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "engines": {
