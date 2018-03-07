@@ -1,5 +1,6 @@
 require('./config/config');
 //node 7.3.0
+console.log('prod?', process.env.NODE_ENV);
 const express = require('express');
 const bodyParser = require('body-parser');
 const cheerio = require('cheerio');
@@ -111,7 +112,7 @@ require('./routes/chatRoutes')(app, io);
 
 
 app.get("/", (req, res) => {
-  res.send("HERLLO PLS WORK");
+  res.send("HELLO PLS WORK");
 });
 
 server.listen(port, () => {
