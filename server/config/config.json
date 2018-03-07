@@ -2,8 +2,8 @@
     "development": {
         "PORT": 3007,
         "MONGODB_URL2": "mongodb://francais:4RiKBofJkffcR0LHp38Mrx2NO3AZSyKebyM3vGbMm4kFyxT5PL9fqoBZTou9vkCLfBB6ny3FbB0ugLPktyTiZQ==@francais.documents.azure.com:10255/?ssl=true&replicaSet=globaldb",
-        "MONGODB_URL3": "mongodb://localhost:27017/language",
-        "MONGODB_URL": "mongodb://francais-db:qv2CWlbc6b7tHnVXAJpbZ8tD8g0OT3BK11aaHQg6JaFYcQBMB8q9jKVERFxkcwccolQxR5dnZ9rBOkXoI4zaUQ==@francais-db.documents.azure.com:10255/?ssl=true",
+        "MONGODB_URL": "mongodb://localhost:27017/language",
+        "MONGODB_URL3": "mongodb://francais-db:qv2CWlbc6b7tHnVXAJpbZ8tD8g0OT3BK11aaHQg6JaFYcQBMB8q9jKVERFxkcwccolQxR5dnZ9rBOkXoI4zaUQ==@francais-db.documents.azure.com:10255/?ssl=true",
         "SECRET": "hfhf0fiwjf02j0r92sjfjf209fj290fjsjfwfj092jf92f90sfsdfsfjks"
     }
 }
