@@ -112,7 +112,7 @@ require('./routes/chatRoutes')(app, io);
 
 
 app.get("/", (req, res) => {
-  res.send(new Date().getHours());
+  res.send("hello");
 });
 
 server.listen(port, () => {
