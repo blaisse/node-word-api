@@ -113,7 +113,8 @@ require('./routes/chatRoutes')(app, io);
 
 app.get("/", (req, res) => {
   const hour = new Date().getHours();
-  res.send({ hour, hi: "hi" });
+  const minutes = new Date().getMinutes();
+  res.send({ hour, minutes });
 });
 
 server.listen(port, () => {
