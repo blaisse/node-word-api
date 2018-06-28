@@ -71,7 +71,7 @@ module.exports = (app) => {
                 // console.log('help?');
                 Noun.aggregate([
                     { $match: { lang: req.params.lang, plural: { "$exists": true } } },
-                    { $match: { plural: { $ne: u.lastCorrect['plural'] } } },
+                    { $match: { word: { $ne: u.lastCorrect['plural'] } } },
                     { $sample: { size: 1 } }
                 ]).then((nouns) => {
                     console.log(u.lastCorrect['plural'], nouns[0]);                    

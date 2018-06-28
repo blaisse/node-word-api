@@ -118,7 +118,7 @@ app.get("/", (req, res) => {
 });
 
 server.listen(port, () => {
-    console.log('server started');
+    console.log('server started', port);
 });
 
 // module.exports = {app};

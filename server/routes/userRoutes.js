@@ -8,15 +8,13 @@ const requireSignin = passport.authenticate('local', { session: false });
 const requireAuth = passport.authenticate('jwt', { session: false });
 
 module.exports = (app) => {
-    app.post('/setlastcorrect/:type/:correct', requireAuth, (req, res) => {
+    app.post('/setlastcorrect/:type/:correct', requireAuth, async (req, res) => {
         const user = req.user;
         console.log('pp', req.params.type, req.params.correct);
         // console.log('user', req.user);
         user.lastCorrect[req.params.type] = req.params.correct;
         user.markModified('lastCorrect');
-        user.save().then((u) => {
-            // console.log('help', u);
-            res.send("done");
-        });
+        await user.save();
+        res.send("Last correct saved");
     });
 };

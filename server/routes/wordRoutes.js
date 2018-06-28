@@ -8,8 +8,7 @@ module.exports = (app) => {
             word: req.body.word,
             meaning: req.body.meaning,
             lang: req.body.lang,
-            conj: req.body.conj
-            
+            tenses: req.body.tenses
         });
         word.save().then((doc) => {
             res.send(doc);
@@ -25,56 +24,45 @@ module.exports = (app) => {
             res.status(400).send(e);
         });
     });
-    app.post("/word", (req, res) => {
-        //possible use React state to reject repeated word
-        const times = req.body.time; //array of strings
-        const present_simple = 'simple';
-        const past_simple = 'past_simple';
-        var rDocs = [];
-        var arr= [];
+    app.post("/word", async (req, res) => {
+        const tense = req.body.time; //string
         const user = req.body.user;
-        console.log('user', user);
+        console.log('tense', tense);
         if(user){
-            User.findOne({ email: user }).then((u) => {
-                // console.log('hilfe', u);
-                Word.find({lang: req.body.lang, word: { $ne: u.lastCorrect['verb'] }}).then((docs) => {
-                    console.log('www', docs);
-                    docs.forEach(function(item){
-                        var x = req.body.time;
-                        // console.log(x);
-                        var y = [];
-                        item.conj.forEach(function(obj) {
-                            x.forEach(function(tense){
-                              if(obj.time === tense) y.push(tense);
-                            });
-                        });
-                        if(y.length === x.length){
-                            rDocs.push(item);
-                        }
-                    });
-                    console.log('rDocs', rDocs);
-                    const random = Math.floor(Math.random() * rDocs.length);
-                    res.send(rDocs[random]);
-                });
-            });
+            //fetch a verb that is different from the last correctly answered
+            const fetchedUser = await User.findOne({ email: user });
+            const words = await Word.find({ 
+                lang: req.body.lang,
+                word: { $ne: fetchedUser.lastCorrect['verb'] },
+                tenses: { $elemMatch: { tense: tense } }
+                // "tenses.tense": tense
+            }, { word: 1, meaning: 1, tenses: { $elemMatch: { tense: tense } } }); 
+            const random = Math.floor(Math.random() * words.length);
+            console.log('help', words[random]);
+            res.send(words[random]);
         } else {
-            Word.find({lang: req.body.lang}).then((docs) => {
-                docs.forEach(function(item){
-                    var x = req.body.time;
-                    var y = [];
-                    item.conj.forEach(function(obj) {
-                        x.forEach(function(tense){
-                          if(obj.time === tense) y.push(tense);
-                        });
-                    });
-                    if(y.length === x.length){
-                        rDocs.push(item);
-                    }
-                });
-                // console.log('rDocs', rDocs);
-                const random = Math.floor(Math.random() * rDocs.length);
-                res.send(rDocs[random]);
-            });
+            const words = await Word.find({ 
+                lang: req.body.lang,
+                tenses: { $elemMatch: { tense: tense } }
+            }, { word: 1, meaning: 1, tenses: { $elemMatch: { tense: tense } } });
+            const random = Math.floor(Math.random() * words.length);
+            res.send(words[random]);
+            // Word.find({lang: req.body.lang}).then((docs) => {
+            //     docs.forEach(function(item){
+            //         var x = req.body.time;
+            //         var y = [];
+            //         item.conj.forEach(function(obj) {
+            //             x.forEach(function(tense){
+            //               if(obj.time === tense) y.push(tense);
+            //             });
+            //         });
+            //         if(y.length === x.length){
+            //             rDocs.push(item);
+            //         }
+            //     });
+            //     const random = Math.floor(Math.random() * rDocs.length);
+            //     res.send(rDocs[random]);
+            // });
         }
         
         // Word.aggregate([
@@ -85,13 +73,6 @@ module.exports = (app) => {
         //     if(verb) res.send(verb[0]);
         // }, (e) => {
         //     res.status(404).send(e);
-        // });
-        // Word.aggregate([
-        //     {$sample: {size:1}}
-        // ]).then((word) => {
-        //     res.send(word[0]);
-        // }, (e) => {
-        //     res.status(400).send(e);
         // });
     });
     app.get("/word/:name", (req, res) => {

@@ -1,5 +1,8 @@
 const Sentence = require('./../models/sentence');
 const User = require('./../models/user');
+const mongoose = require('mongoose');
+const { ObjectId } = mongoose.Types;
+
 
 function checkRand(ar, randomNumber){
     //Cannot break forEach...
@@ -113,8 +116,6 @@ module.exports = (app) => {
     });
 
     app.get('/fetchsentence/:lang/:level/:user', (req, res) => {
-        // console.log(req.params.user);
-        // console.log(typeof req.params.level);
         const loggedUser = req.params.user;
         
             User.findOne({ email: req.params.user }).then((u) => {
@@ -122,7 +123,7 @@ module.exports = (app) => {
                     Sentence.aggregate([
                         { $match: { lang: req.params.lang } },
                         { $match: { level: req.params.level } },
-                        { $match: { translation: { $ne: u.lastCorrect['sentence'] } } },
+                        { $match: { _id: { $ne: ObjectId(u.lastCorrect['sentence']) } } },
                         { $sample: { size: 1 } }
                     ]).then((sentence) => {
                         // console.log('s', sentence);
@@ -131,11 +132,11 @@ module.exports = (app) => {
                         //make sure both arrays are not the same so the question wont be 
                         //provided with an answer right away
                         while(r){
-                            // console.log('pls work');
                             mix = mixArray(sentence);
                             r = compareArrays(mix.slicedFully, mix.mixedFully);
                         }
                         mix.translation = sentence[0].translation;
+                        mix.id = sentence[0]._id;
                         res.send(mix);
                     });
                 } else {
@@ -160,8 +161,5 @@ module.exports = (app) => {
                 }
               
             });
-        
-            //fetch it and slice up
-           
     });
 };

@@ -10,7 +10,7 @@ module.exports = (app) => {
     
         Noun.aggregate([
             { $match: { lang: req.body.lang, img: { "$exists": true } } },
-            { $sample: { size: 4 } }
+            { $sample: { size: 2 } }
         ]).then((flashcards) => {
             
             // const x = flashcards.filter((item) => {

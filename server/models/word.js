@@ -9,15 +9,20 @@ const Word = mongoose.model('Word', {
     },
     meaning: String,
     lang: String,
-    conj: [
+    tenses: [
         {
-            "time": String,
-            "ich": String,
-            "du": String,
-            "er_sie_es": String,
-            "wir": String,
-            "ihr": String,
-            "sie_Sie": String
+            tense: String,
+            conjugation: {
+                je: String,
+                tu: String,
+                il: String,
+                elle: String,
+                on: String,
+                nous: String,
+                vous: String,
+                ils: String,
+                elles: String
+            }
         }
     ]
 });
