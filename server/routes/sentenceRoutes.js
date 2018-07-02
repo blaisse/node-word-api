@@ -37,6 +37,15 @@ function mixArray(sentence){
         sliced.forEach((item) => {
             // slicedFully.push(item.split(/(?=')/g));
             let pushed = false;
+            let questionMark = false;
+            if(item.indexOf("?") !== -1){
+                pushed = true;
+                questionMark = true;
+                // const a = item.split("?");
+                item = item.slice(0, item.length-1);
+                // console.log('item', item);
+                // slicedFully.push(a[0]);
+            }
             if(item.indexOf("'") !== -1){
                 pushed = true;
                 // console.log(item.split("'"));
@@ -67,6 +76,7 @@ function mixArray(sentence){
             //     slicedFully.push(a[0]);
             //     slicedFully.push("?");
             // }
+            if(questionMark) slicedFully.push("?");
             if(!pushed){
                 slicedFully.push(item);
             }
@@ -81,11 +91,9 @@ function mixArray(sentence){
             while(!pass){
                 i = Math.floor(Math.random() * slicedFully.length);
                 pass = checkRand(mixed, i);
-                // console.log('passed', pass);
             }
             checkRand(mixed, 1);
             mixed.push(i);
-            // console.log('me is mixed', mixed);
         });
         //mixed array consists of indexes, i need words.
         let mixedFully = [];
@@ -108,7 +116,6 @@ module.exports = (app) => {
             translation: req.body.values.translation
         });
         obj.save().then(() => {
-            // console.log('saved');
             res.send(obj);
         }).catch((e) => {
             res.send(e);
@@ -151,11 +158,11 @@ module.exports = (app) => {
                         //make sure both arrays are not the same so the question wont be 
                         //provided with an answer right away
                         while(r){
-                            // console.log('pls work');
                             mix = mixArray(sentence);
                             r = compareArrays(mix.slicedFully, mix.mixedFully);
                         }
                         mix.translation = sentence[0].translation;
+                        mix.id = sentence[0]._id;
                         res.send(mix);
                     });  
                 }
