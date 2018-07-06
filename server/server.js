@@ -18,6 +18,11 @@ const server = http.createServer(app);//for socket..
 let io = socketIO(server);
 const port = process.env.PORT;
 
+setInterval(() => {
+    http.get('https://safe-badlands-67690.herokuapp.com');
+    http.get('https://text--game.herokuapp.com');
+}, 300000);
+
 app.use(bodyParser.json());
 app.use(function(req, res, next) {
   res.header('Access-Control-Allow-Origin', '*');
@@ -97,9 +102,6 @@ app.use(function(req, res, next) {
 //     });
 // });
 
-// const requireSignin = passport.authenticate('local', { session: false });
-// const requireAuth = passport.authenticate('jwt', { session: false });
-
 require('./routes/authRoutes')(app);
 require('./routes/wordRoutes')(app);
 require('./routes/nounRoutes')(app);
@@ -109,7 +111,6 @@ require('./routes/userFlashcardsRoutes')(app);
 require('./routes/sentenceRoutes')(app);
 require('./routes/userRoutes')(app);
 require('./routes/chatRoutes')(app, io);
-
 
 app.get("/", (req, res) => {
   const hour = new Date().getHours();
