@@ -18,10 +18,10 @@ const server = http.createServer(app);//for socket..
 let io = socketIO(server);
 const port = process.env.PORT;
 
-setInterval(() => {
-    http.get('https://safe-badlands-67690.herokuapp.com');
-    http.get('https://text--game.herokuapp.com');
-}, 300000);
+// setInterval(() => {
+//     http.get('https://safe-badlands-67690.herokuapp.com');
+//     http.get('https://text--game.herokuapp.com');
+// }, 300000);
 
 app.use(bodyParser.json());
 app.use(function(req, res, next) {
