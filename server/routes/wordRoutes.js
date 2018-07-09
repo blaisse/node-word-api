@@ -1,7 +1,6 @@
 const { Word } = require('./../models/word');
 const User = require('./../models/user');
 
-
 module.exports = (app) => {
     app.post("/words", (req, res) => {
         let word = new Word({

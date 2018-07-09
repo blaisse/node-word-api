@@ -1,6 +1,4 @@
 const { Users } = require('./../users');
-// const socketIO = require('socket.io'); 
-// const http = require('http');
 
 module.exports = (app, io) => {
   
@@ -10,25 +8,19 @@ module.exports = (app, io) => {
     let savedMessages = {};
 
     io.on('connection', (socket) => {
-        // console.log('connected');
         socket.on('join', (user) => {
-            // console.log('help', user);
 
             //dont emit if user is already there?
             const u = chatUsers.getUserByName(user.user);
-            // console.log('u', u);
             if(u){
                 // socket.join(user.channel);
                 // io.to(user.channel).emit('updateList', chatUsers.getUsersList(user.channel, user.user));
                 return;
             }
-            // console.log('after return');
             socket.join(user.channel);
             chatUsers.removeUserByName(user.user);
             chatUsers.addUser(socket.id, user.user, user.channel);
-
           
-            // console.log('chat:', chatUsers);
             //user joined, update list
             io.to(user.channel).emit('updateList', chatUsers.getUsersList(user.channel, user.user));
         });
@@ -62,9 +54,7 @@ module.exports = (app, io) => {
             } else {
                 savedMessages[data.me] = [];
                 savedMessages[data.me].push(data.message);
-            }
-            
-            // console.log('d', savedMessages);
+            }            
             // io.to(u.id).emit('savingMessage', data);
         });
         socket.on('joinPrivateChat', (data) => {
@@ -88,8 +78,6 @@ module.exports = (app, io) => {
                     }
                 }
             }
-
-            
             // console.log('rooms:',socket.rooms);
             // console.log('data', data);
             // console.log('person rooms', person.id.rooms);
@@ -100,13 +88,8 @@ module.exports = (app, io) => {
             // console.log('leaving channel', channel.channel);
         });
         socket.on('disconnect', () => {
-            // console.log('server disconnected');
-            // console.log('user disconnected- rooms', socket.rooms);
             const user = chatUsers.getUser(socket.id);            
             chatUsers.removeUserBySocket(socket.id);
-            // console.log('user', user);
-            //WTF?//user.room
-            
             io.to('general').emit('updateList', chatUsers.getUsersList('general'));
         });
     });

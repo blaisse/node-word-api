@@ -1,22 +1,16 @@
 require('./config/config');
-//node 7.3.0
-console.log('prod?', process.env.NODE_ENV);
+
 const express = require('express');
 const bodyParser = require('body-parser');
-const cheerio = require('cheerio');
-const axios = require('axios');
 const http = require('http');
 const socketIO = require('socket.io'); 
 
-const { Users } = require('./users');
-
 const { mongoose } = require('./db/mongoose');
-const { ObjectID } = require('mongodb');
 
 const app = express();
-const server = http.createServer(app);//for socket..
+const server = http.createServer(app);//for socket
 let io = socketIO(server);
-const port = process.env.PORT;
+const port = process.env.PORT; 
 
 // setInterval(() => {
 //     http.get('https://safe-badlands-67690.herokuapp.com');
@@ -30,6 +24,29 @@ app.use(function(req, res, next) {
   res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With');
   next();
 });
+
+require('./routes/authRoutes')(app);
+require('./routes/wordRoutes')(app);
+require('./routes/nounRoutes')(app);
+require('./routes/flashcardsRoutes')(app);
+require('./routes/langRoutes')(app);
+require('./routes/userFlashcardsRoutes')(app);
+require('./routes/sentenceRoutes')(app);
+require('./routes/userRoutes')(app);
+require('./routes/chatRoutes')(app, io);
+require('./routes/webScraper')(app);
+
+app.get("/", (req, res) => {
+  const hour = new Date().getHours();
+  const minutes = new Date().getMinutes();
+  res.send({ hour, minutes });
+});
+
+server.listen(port, () => {
+    console.log('server started', port);
+});
+
+// module.exports = { app };
 
 //CHAT
 // let users = new Users;
@@ -101,25 +118,3 @@ app.use(function(req, res, next) {
 //         //eventually add timestamp later on  
 //     });
 // });
-
-require('./routes/authRoutes')(app);
-require('./routes/wordRoutes')(app);
-require('./routes/nounRoutes')(app);
-require('./routes/flashcardsRoutes')(app);
-require('./routes/langRoutes')(app);
-require('./routes/userFlashcardsRoutes')(app);
-require('./routes/sentenceRoutes')(app);
-require('./routes/userRoutes')(app);
-require('./routes/chatRoutes')(app, io);
-
-app.get("/", (req, res) => {
-  const hour = new Date().getHours();
-  const minutes = new Date().getMinutes();
-  res.send({ hour, minutes });
-});
-
-server.listen(port, () => {
-    console.log('server started', port);
-});
-
-// module.exports = {app};
