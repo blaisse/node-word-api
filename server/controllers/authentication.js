@@ -18,7 +18,7 @@ exports.signup = function(req, res, next){
     
     User.findOne({ email }).then((user) => {
         if(user){
-            return res.status(422).send({ error: "Email in use" });
+            return res.status(422).send({ error: "Username in use" });
         }
         const u = new User({ email, password });
         u.save().then(() => {
@@ -32,7 +32,6 @@ exports.signup = function(req, res, next){
 }
 
 exports.signin = function(req, res, next){
-    console.log('?????');
     // console.log(req.user.email);
     res.send({ token: encodeToken(req.user), username: req.user.email, lang: req.user.lang });
 }

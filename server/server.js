@@ -3,6 +3,7 @@ require('./config/config');
 const express = require('express');
 const bodyParser = require('body-parser');
 const http = require('http');
+const https = require('https');
 const socketIO = require('socket.io'); 
 
 const { mongoose } = require('./db/mongoose');
@@ -13,9 +14,9 @@ let io = socketIO(server);
 const port = process.env.PORT; 
 
 setInterval(() => {
-    http.get('https://safe-badlands-67690.herokuapp.com');
-    http.get('https://text--game.herokuapp.com');
-}, 900000);
+    https.get('https://safe-badlands-67690.herokuapp.com');
+    https.get('https://text--game.herokuapp.com');
+}, 300000);
 
 app.use(bodyParser.json());
 app.use(function(req, res, next) {
