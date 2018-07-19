@@ -1,19 +1,17 @@
 const { Noun } = require('./../models/noun');
-
 const User = require('./../models/user');
 
-const Authentication = require('./../controllers/authentication');
-const passport = require('passport');
-const passportService = require('./../services/passport');
+// const Authentication = require('./../controllers/authentication');
+// const passport = require('passport');
+// const passportService = require('./../services/passport');
 
-const requireSignin = passport.authenticate('local', { session: false });
-const requireAuth = passport.authenticate('jwt', { session: false });
-
+// const requireSignin = passport.authenticate('local', { session: false });
+// const requireAuth = passport.authenticate('jwt', { session: false });
 
 module.exports = (app) => {
 
     app.post('/noun', (req, res) => {
-        let noun = new Noun({
+        const noun = new Noun({
             word: req.body.word,
             article: req.body.article,
             lang: req.body.lang,
@@ -28,7 +26,7 @@ module.exports = (app) => {
         });
     });
     app.get('/noun/:name', (req, res) => {
-        let name = req.params.name;
+        const name = req.params.name;
         Noun.findOne({ word: name }).then((word) => {
             if(word){
                 res.send(word);
@@ -39,9 +37,7 @@ module.exports = (app) => {
     });
     app.get('/userfetchnoun/:lang/:user', (req, res) => {
         User.findOne({ email: req.params.user }).then((user) => {
-            if(user){
-                // console.log('?', user.lastCorrect['noun']);
-          
+            if(user){          
                 //fetch a noun that is not the one in lastCorrect.noun
                 Noun.aggregate([
                     { $match: { lang: req.params.lang } },
@@ -68,7 +64,6 @@ module.exports = (app) => {
     app.get('/plural/:lang/:user', (req, res) => {
         User.findOne({ email: req.params.user }).then((u) => {
             if(u){
-                // console.log('help?');
                 Noun.aggregate([
                     { $match: { lang: req.params.lang, plural: { "$exists": true } } },
                     { $match: { word: { $ne: u.lastCorrect['plural'] } } },
@@ -78,7 +73,6 @@ module.exports = (app) => {
                   res.send(nouns[0]);
                 });
             } else {
-                // console.log('here');
                 Noun.aggregate([
                     { $match: { lang: req.params.lang, plural: { "$exists": true } } },
                     { $sample: { size: 1 } }
